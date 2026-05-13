@@ -1,7 +1,8 @@
 "use client";
 
-import { Plus, XIcon } from "lucide-react";
+import { Pencil, Plus, Trash2, XIcon } from "lucide-react";
 
+import { useProjectWorkspace } from "@/components/editor/project-workspace-context";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,9 @@ export function ProjectSidebar({
   isOpen,
   onClose,
 }: ProjectSidebarProps) {
+  const { ownedProjects, sharedProjects, openCreate, openRename, openDelete } =
+    useProjectWorkspace();
+
   return (
     <>
       <button
@@ -71,24 +75,85 @@ export function ProjectSidebar({
 
           <TabsContent
             value="my-projects"
-            className="min-h-0 flex-1 overflow-y-auto px-4 py-6 data-hidden:hidden"
+            className="min-h-0 flex-1 overflow-y-auto px-2 py-3 data-hidden:hidden"
           >
-            <p className="text-center text-sm text-muted-foreground">
-              No projects yet.
-            </p>
+            {ownedProjects.length === 0 ? (
+              <p className="px-2 py-6 text-center text-sm text-muted-foreground">
+                No projects yet.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-0.5">
+                {ownedProjects.map((project) => (
+                  <li key={project.id}>
+                    <div
+                      className={cn(
+                        "flex items-center gap-0.5 rounded-xl py-1 pl-2",
+                        "hover:bg-muted/60"
+                      )}
+                    >
+                      <span className="min-w-0 flex-1 truncate text-sm text-foreground">
+                        {project.name}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        className="size-8 shrink-0 text-muted-foreground"
+                        aria-label={`Rename ${project.name}`}
+                        onClick={() => {
+                          openRename(project);
+                        }}
+                      >
+                        <Pencil className="size-4" aria-hidden />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        className="size-8 shrink-0 text-muted-foreground"
+                        aria-label={`Delete ${project.name}`}
+                        onClick={() => {
+                          openDelete(project);
+                        }}
+                      >
+                        <Trash2 className="size-4" aria-hidden />
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </TabsContent>
           <TabsContent
             value="shared"
-            className="min-h-0 flex-1 overflow-y-auto px-4 py-6 data-hidden:hidden"
+            className="min-h-0 flex-1 overflow-y-auto px-2 py-3 data-hidden:hidden"
           >
-            <p className="text-center text-sm text-muted-foreground">
-              Nothing shared with you yet.
-            </p>
+            {sharedProjects.length === 0 ? (
+              <p className="px-2 py-6 text-center text-sm text-muted-foreground">
+                Nothing shared with you yet.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-0.5">
+                {sharedProjects.map((project) => (
+                  <li key={project.id}>
+                    <div className="rounded-xl py-2 pr-2 pl-2 hover:bg-muted/60">
+                      <span className="block truncate text-sm text-foreground">
+                        {project.name}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </TabsContent>
         </Tabs>
 
         <div className="border-t border-border p-4">
-          <Button type="button" className="w-full gap-2">
+          <Button
+            type="button"
+            className="w-full gap-2"
+            onClick={openCreate}
+          >
             <Plus className="size-4" aria-hidden />
             New Project
           </Button>
