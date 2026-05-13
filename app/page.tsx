@@ -1,7 +1,12 @@
-export default function Home() {
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center text-muted-foreground">
-      Editor canvas placeholder
-    </div>
-  );
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const { userId } = await auth();
+
+  if (userId) {
+    redirect("/editor");
+  }
+
+  redirect("/sign-in");
 }
