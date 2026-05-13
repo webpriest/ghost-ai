@@ -7,15 +7,25 @@ import {
 } from "react";
 
 import {
-  useProjectDialogs,
+  useProjectActions,
   type ProjectWorkspaceValue,
-} from "@/hooks/use-project-dialogs";
+} from "@/hooks/use-project-actions";
+
+import type { Project } from "@/types/project";
 
 const ProjectWorkspaceContext =
   createContext<ProjectWorkspaceValue | null>(null);
 
-export function ProjectWorkspaceProvider({ children }: { children: ReactNode }) {
-  const value = useProjectDialogs();
+export function ProjectWorkspaceProvider({
+  ownedProjects,
+  sharedProjects,
+  children,
+}: {
+  ownedProjects: Project[];
+  sharedProjects: Project[];
+  children: ReactNode;
+}) {
+  const value = useProjectActions({ ownedProjects, sharedProjects });
   return (
     <ProjectWorkspaceContext.Provider value={value}>
       {children}

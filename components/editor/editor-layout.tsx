@@ -7,11 +7,24 @@ import { ProjectDialogs } from "@/components/editor/project-dialogs";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
 import { ProjectWorkspaceProvider } from "@/components/editor/project-workspace-context";
 
-export function EditorLayout({ children }: { children: ReactNode }) {
+import type { Project } from "@/types/project";
+
+export function EditorLayout({
+  children,
+  ownedProjects,
+  sharedProjects,
+}: {
+  children: ReactNode;
+  ownedProjects: Project[];
+  sharedProjects: Project[];
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <ProjectWorkspaceProvider>
+    <ProjectWorkspaceProvider
+      ownedProjects={ownedProjects}
+      sharedProjects={sharedProjects}
+    >
       <div className="relative flex min-h-screen flex-col bg-background">
         <EditorNavbar
           isSidebarOpen={sidebarOpen}

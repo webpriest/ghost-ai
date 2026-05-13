@@ -24,7 +24,6 @@ export function ProjectDialogs() {
     createName,
     setCreateName,
     createSlugPreview,
-    canSubmitCreate,
     renameName,
     setRenameName,
     targetProject,
@@ -88,11 +87,9 @@ export function ProjectDialogs() {
             </div>
             <div className="rounded-xl border border-border bg-muted/40 px-3 py-2">
               <p className="text-xs font-medium text-muted-foreground">
-                Slug preview
+                Room ID preview
               </p>
-              <p className="font-mono text-sm text-foreground">
-                /{createSlugPreview}
-              </p>
+              <p className="font-mono text-sm text-foreground">{createSlugPreview}</p>
             </div>
             <DialogFooter className="gap-2 border-0 bg-transparent p-0 sm:justify-end">
               <Button
@@ -103,10 +100,7 @@ export function ProjectDialogs() {
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={isLoading || !canSubmitCreate}
-              >
+              <Button type="submit" disabled={isLoading}>
                 {isLoading ? "Creating…" : "Create"}
               </Button>
             </DialogFooter>
