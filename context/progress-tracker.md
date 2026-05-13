@@ -9,12 +9,13 @@ change.
 
 ## Current Goal
 
-- Implement the next feature spec after editor chrome (`context/feature-specs/`).
+- Continue with the next unit in `context/feature-specs/` after **03-auth**.
 
 ## Completed
 
 - **01-design-system** — shadcn/ui (Base UI “nova” preset) with Button, Card, Dialog, Input, Tabs, Textarea, ScrollArea; lucide-react; `lib/utils.ts` `cn()`; Ghost dark palette and Geist fonts wired in `app/globals.css` + `dark` on `<html>`. `components/ui/*` untouched after CLI install.
-- **02-editor** — `editor-navbar.tsx` (fixed-height top bar; left/center/right; sidebar toggle `PanelLeftOpen`/`PanelLeftClose`; right empty; dark `bg-card` + `border-border`); `project-sidebar.tsx` (fixed overlay, no layout shift; slide from left; `isOpen` / `onClose`; Projects header + close; Tabs “My Projects” / “Shared” + empty placeholders; full-width bottom “New Project” + `Plus`); `dialog-pattern.tsx` (`DialogPattern` + title/description/footer slots via `globals.css` theme tokens — no modal); `editor-layout.tsx` wires navbar + sidebar in `app/layout.tsx`; `app/page.tsx` is canvas placeholder only.
+- **02-editor** — `editor-navbar.tsx` (fixed-height top bar; left/center/right; sidebar toggle `PanelLeftOpen`/`PanelLeftClose`; right empty; dark `bg-card` + `border-border`); `project-sidebar.tsx` (fixed overlay, no layout shift; slide from left; `isOpen` / `onClose`; Projects header + close; Tabs “My Projects” / “Shared” + empty placeholders; full-width bottom “New Project” + `Plus`); `dialog-pattern.tsx` (`DialogPattern` + title/description/footer slots via `globals.css` theme tokens — no modal); `editor-layout.tsx` wires navbar + sidebar in `app/editor/layout.tsx`; editor shell routes live under `/editor`.
+- **03-auth** — `@clerk/ui` + `dark` theme; `lib/clerk-appearance.ts` maps Clerk appearance variables to app CSS tokens; `ClerkProvider` in `app/layout.tsx`; root `proxy.ts` (Next 16) with protect-by-default and public paths derived from `NEXT_PUBLIC_CLERK_SIGN_IN_URL` / `NEXT_PUBLIC_CLERK_SIGN_UP_URL`; `app/sign-in/[[...sign-in]]` and `app/sign-up/[[...sign-up]]` with `AuthShell` (two-panel ≥ `lg`, form-only on small screens); `app/page.tsx` redirects signed-in users to `/editor` and signed-out to `/sign-in`; `UserButton` in editor navbar.
 
 ## In Progress
 
@@ -22,7 +23,7 @@ change.
 
 ## Next Up
 
-- Next unit in `context/feature-specs/` (post **02-editor**).
+- Next numbered feature spec in `context/feature-specs/` (after **03-auth**).
 
 ## Open Questions
 
