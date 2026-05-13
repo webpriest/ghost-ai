@@ -1,10 +1,13 @@
 "use client";
 
-import { Plus, XIcon } from "lucide-react";
+import Link from "next/link";
+import { Pencil, Plus, Trash2, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useProjectWorkspace } from "@/components/editor/project-workspace-context";
 import { cn } from "@/lib/utils";
+import type { Project } from "@/types/project";
 
 export interface ProjectSidebarProps {
   className?: string;
@@ -12,11 +15,78 @@ export interface ProjectSidebarProps {
   onClose: () => void;
 }
 
+function ProjectList({
+  projects,
+  emptyLabel,
+  showActions,
+  onNavigate,
+}: {
+  projects: Project[];
+  emptyLabel: string;
+  showActions: boolean;
+  onNavigate: () => void;
+}) {
+  const { openRename, openDelete } = useProjectWorkspace();
+
+  if (projects.length === 0) {
+    return (
+      <p className="text-center text-sm text-muted-foreground">{emptyLabel}</p>
+    );
+  }
+
+  return (
+    <ul className="flex flex-col gap-1">
+      {projects.map((p) => (
+        <li
+          key={p.id}
+          className="flex items-center gap-1 rounded-xl border border-border/80 bg-muted/20"
+        >
+          <Link
+            href={`/editor/${p.id}`}
+            className="min-w-0 flex-1 truncate px-3 py-2.5 text-sm font-medium text-foreground hover:text-brand"
+            onClick={() => {
+              onNavigate();
+            }}
+          >
+            {p.name}
+          </Link>
+          {showActions && p.role === "owner" ? (
+            <div className="flex shrink-0 items-center gap-0.5 pr-1">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="text-muted-foreground"
+                aria-label={`Rename ${p.name}`}
+                onClick={() => openRename(p)}
+              >
+                <Pencil className="size-4" aria-hidden />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="text-muted-foreground"
+                aria-label={`Delete ${p.name}`}
+                onClick={() => openDelete(p)}
+              >
+                <Trash2 className="size-4" aria-hidden />
+              </Button>
+            </div>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function ProjectSidebar({
   className,
   isOpen,
   onClose,
 }: ProjectSidebarProps) {
+  const { ownedProjects, sharedProjects, openCreate } = useProjectWorkspace();
+
   return (
     <>
       <button
@@ -73,22 +143,34 @@ export function ProjectSidebar({
             value="my-projects"
             className="min-h-0 flex-1 overflow-y-auto px-4 py-6 data-hidden:hidden"
           >
-            <p className="text-center text-sm text-muted-foreground">
-              No projects yet.
-            </p>
+            <ProjectList
+              projects={ownedProjects}
+              emptyLabel="No projects yet."
+              showActions
+              onNavigate={onClose}
+            />
           </TabsContent>
           <TabsContent
             value="shared"
             className="min-h-0 flex-1 overflow-y-auto px-4 py-6 data-hidden:hidden"
           >
-            <p className="text-center text-sm text-muted-foreground">
-              Nothing shared with you yet.
-            </p>
+            <ProjectList
+              projects={sharedProjects}
+              emptyLabel="Nothing shared with you yet."
+              showActions={false}
+              onNavigate={onClose}
+            />
           </TabsContent>
         </Tabs>
 
         <div className="border-t border-border p-4">
-          <Button type="button" className="w-full gap-2">
+          <Button
+            type="button"
+            className="w-full gap-2"
+            onClick={() => {
+              openCreate();
+            }}
+          >
             <Plus className="size-4" aria-hidden />
             New Project
           </Button>

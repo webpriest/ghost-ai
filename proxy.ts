@@ -11,7 +11,9 @@ const clerkProxy = clerkMiddleware(async (auth, req) => {
   const isPublicAuthRoute =
     isUnderAuthPath(pathname, signInBase) || isUnderAuthPath(pathname, signUpBase);
 
-  if (!isPublicAuthRoute) {
+  const isApiRoute = pathname === "/api" || pathname.startsWith("/api/");
+
+  if (!isPublicAuthRoute && !isApiRoute) {
     await auth.protect();
   }
 });
