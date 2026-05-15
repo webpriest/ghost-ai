@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Pencil, Plus, Trash2, XIcon } from "lucide-react";
 
 import { useProjectWorkspace } from "@/components/editor/project-workspace-context";
@@ -18,6 +20,10 @@ export function ProjectSidebar({
   isOpen,
   onClose,
 }: ProjectSidebarProps) {
+  const pathname = usePathname();
+  const match = pathname.match(/^\/editor\/([^/]+)$/);
+  const activeRoomId = match?.[1] ?? null;
+
   const { ownedProjects, sharedProjects, openCreate, openRename, openDelete } =
     useProjectWorkspace();
 
@@ -88,12 +94,17 @@ export function ProjectSidebar({
                     <div
                       className={cn(
                         "flex items-center gap-0.5 rounded-xl py-1 pl-2",
-                        "hover:bg-muted/60"
+                        "hover:bg-muted/60",
+                        project.id === activeRoomId &&
+                          "bg-muted/70 ring-1 ring-border"
                       )}
                     >
-                      <span className="min-w-0 flex-1 truncate text-sm text-foreground">
+                      <Link
+                        href={`/editor/${project.id}`}
+                        className="min-w-0 flex-1 truncate text-left text-sm text-foreground underline-offset-2 hover:underline"
+                      >
                         {project.name}
-                      </span>
+                      </Link>
                       <Button
                         type="button"
                         variant="ghost"
@@ -136,10 +147,19 @@ export function ProjectSidebar({
               <ul className="flex flex-col gap-0.5">
                 {sharedProjects.map((project) => (
                   <li key={project.id}>
-                    <div className="rounded-xl py-2 pr-2 pl-2 hover:bg-muted/60">
-                      <span className="block truncate text-sm text-foreground">
+                    <div
+                      className={cn(
+                        "rounded-xl py-2 pr-2 pl-2 hover:bg-muted/60",
+                        project.id === activeRoomId &&
+                          "bg-muted/70 ring-1 ring-border"
+                      )}
+                    >
+                      <Link
+                        href={`/editor/${project.id}`}
+                        className="block truncate text-sm text-foreground underline-offset-2 hover:underline"
+                      >
                         {project.name}
-                      </span>
+                      </Link>
                     </div>
                   </li>
                 ))}
